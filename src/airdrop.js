@@ -1,7 +1,7 @@
 require('dotenv').config()
 const fs = require('fs')
 const ethers = require('ethers')
-const { namehash, parseEther, formatEther } = ethers.utils
+const { namehash, formatEther } = ethers.utils
 const config = require('../torn-token/config')
 const { deploy, getContractData } = require('./utils')
 

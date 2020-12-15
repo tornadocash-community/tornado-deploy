@@ -26,7 +26,6 @@ const treeUpdateVerifier = getContractData(
   '../tornado-anonymity-mining/build/contracts/TreeUpdateVerifier.json',
 )
 const airdrop = require('../airdrop.json')
-const { domain } = require('process')
 
 const actions = []
 
