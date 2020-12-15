@@ -25,7 +25,7 @@ cd torn-token
 yarn link
 
 # Install torn-token package from local source (create symlink ./node_modules/torn-token -> <remembered torn-token path>)
-cd ../governance
+cd ../tornado-governance
 yarn link torn-token
 ```
 

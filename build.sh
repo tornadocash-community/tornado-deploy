@@ -12,7 +12,7 @@ yarn
 yarn compile
 cd ..
 
-cd governance
+cd tornado-governance
 yarn link torn-token
 yarn
 yarn compile

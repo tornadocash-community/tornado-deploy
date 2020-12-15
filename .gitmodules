@@ -2,9 +2,9 @@
 	path = tornado-anonymity-mining
 	url = https://github.com/tornadocash/tornado-anonymity-mining
 	branch = master
-[submodule "governance"]
-	path = governance
-	url = https://github.com/tornadocash/governance
+[submodule "tornado-governance"]
+	path = tornado-governance
+	url = https://github.com/tornadocash/tornado-governance
 	branch = master
 [submodule "torn-token"]
 	path = torn-token

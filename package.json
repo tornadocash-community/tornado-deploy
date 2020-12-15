@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "clean": "rm -rf torn-token/build && rm -rf tornado-anonymity-mining/build/contracts && rm -rf governance/build",
+    "clean": "rm -rf torn-token/build && rm -rf tornado-anonymity-mining/build/contracts && rm -rf tornado-governance/build",
     "generate": "node src/generate.js",
     "airdrop": "node src/airdrop.js",
     "ens": "node src/ens.js",
