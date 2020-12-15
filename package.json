@@ -1,0 +1,36 @@
+{
+  "name": "tornado-deploy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean": "rm -rf torn-token/build && rm -rf tornado-anonymity-mining/build/contracts && rm -rf governance/build",
+    "generate": "node src/generate.js",
+    "airdrop": "node src/airdrop.js",
+    "ens": "node src/ens.js",
+    "execute": "node src/execute.js",
+    "build": "./build.sh && yarn airdrop && yarn generate",
+    "deploy": "yarn build && yarn ens && yarn execute",
+    "eslint": "eslint --ext .js --ignore-path .gitignore src",
+    "prettier:check": "prettier --check src --config .prettierrc",
+    "prettier:fix": "prettier --write src --config .prettierrc",
+    "lint": "yarn eslint && yarn prettier:check"
+  },
+  "keywords": [],
+  "author": "Roman Semenov <semenov.roma@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@ethersproject/address": "^5.0.4",
+    "@ethersproject/solidity": "^5.0.4",
+    "circomlib": "git+https://github.com/tornadocash/circomlib.git#3b492f9801573eebcfe1b6c584afe8a3beecf2b4",
+    "dotenv": "^8.2.0",
+    "ethers": "^5.0.14",
+    "fixed-merkle-tree": "^0.5.0",
+    "get-value": "^3.0.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.12.1",
+    "prettier": "^2.1.2"
+  }
+}
