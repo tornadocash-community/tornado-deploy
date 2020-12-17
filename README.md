@@ -9,8 +9,8 @@
 ```
 git clone --recursive https://github.com/tornadocash/tornado-deploy
 cd tornado-deploy
-yarn
 cp .env.example .env
+yarn
 
 # optionally copy production snark circuits
 mkdir -p tornado-anonymity-mining/build && cp -R ~/Downloads/circuits ./tornado-anonymity-mining/build
