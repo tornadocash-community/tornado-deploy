@@ -1,20 +1,7 @@
-[submodule "tornado-anonymity-mining"]
-	path = tornado-anonymity-mining
-	url = https://github.com/tornadocash/tornado-anonymity-mining
-	branch = master
-[submodule "tornado-governance"]
-	path = tornado-governance
-	url = https://github.com/tornadocash/tornado-governance
-	branch = master
-[submodule "torn-token"]
-	path = torn-token
-	url = https://github.com/tornadocash/torn-token
-	branch = master
-[submodule "airdrop"]
-	path = airdrop
-	url = https://github.com/tornadocash/airdrop
-	branch = master
+[submodule "tornado-core"]
+	path = tornado-core
+	url = https://github.com/tornadocash/tornado-core
+	branch = create2
 [submodule "deployer"]
 	path = deployer
 	url = https://github.com/tornadocash/deployer
-	branch = master

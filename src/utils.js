@@ -1,24 +1,11 @@
 require('dotenv').config()
-const config = require('../torn-token/config')
 const path = require('path')
 const { getCreate2Address } = require('@ethersproject/address')
 const { keccak256 } = require('@ethersproject/solidity')
 const ethers = require('ethers')
-const MerkleTree = require('fixed-merkle-tree')
-const { poseidon } = require('circomlib')
 
-const DEPLOYER = process.env.DEPLOYER
+const EIP_DEPLOYER = '0xce0042B868300000d44A59004Da54A005ffdcf9f'
 const SALT = process.env.SALT
-
-const poseidonHash = (items) => poseidon(items)
-const poseidonHash2 = (a, b) => poseidonHash([a, b])
-const merkleTree = new MerkleTree(20, [], { hashFunction: poseidonHash2 })
-const zeroMerkleRoot =
-  '0x' +
-  merkleTree
-    .root()
-    .toString(16)
-    .padStart(32 * 2, '0')
 
 function getContractData(contractPath) {
   const json = require(contractPath)
@@ -31,7 +18,7 @@ function getContractData(contractPath) {
 
 function getAddress(bytecode) {
   const initHash = keccak256(['bytes'], [bytecode])
-  return getCreate2Address(DEPLOYER, SALT, initHash)
+  return getCreate2Address(EIP_DEPLOYER, SALT, initHash)
 }
 
 function deploy({
@@ -41,13 +28,15 @@ function deploy({
   args,
   title = '',
   description = '',
-  dependsOn = [config.deployer.address],
+  dependsOn = [], //[config.deployer.address],
 }) {
   console.log('Generating deploy for', contract.name)
   let bytecode = contract.bytecode
+  let constructorArgs
   if (args) {
     const c = new ethers.ContractFactory(contract.abi, contract.bytecode)
     bytecode = c.getDeployTransaction(...args).data
+    constructorArgs = c.interface.encodeDeploy(args)
   }
   return {
     domain,
@@ -56,6 +45,7 @@ function deploy({
     bytecode,
     expectedAddress: getAddress(bytecode),
     title,
+    constructorArgs,
     description,
     dependsOn,
   }
@@ -64,5 +54,4 @@ function deploy({
 module.exports = {
   deploy,
   getContractData,
-  zeroMerkleRoot,
 }
