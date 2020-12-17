@@ -7,6 +7,7 @@ yarn compile
 cd ..
 
 cd torn-token
+yarn unlink torn-token
 yarn link
 yarn
 yarn compile
