@@ -2,7 +2,7 @@
 
 1. node 12
 2. yarn
-3. zkutil (`brew install rust && cargo install zkutil`)
+3. zkutil (`brew install rust && cargo install zkutil`) (needed only for circuit compilation and setup)
 
 ## Usage
 
