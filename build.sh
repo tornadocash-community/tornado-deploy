@@ -21,7 +21,7 @@ cd ..
 cd tornado-anonymity-mining
 yarn link torn-token
 yarn
-if [[ ! -f "build/circuits/treeUpdateVerifier.sol" ]]; then
+if [[ ! -f "build/circuits/TreeUpdateVerifier.sol" ]]; then
   yarn circuit
 fi
 yarn compile
