@@ -19,6 +19,7 @@ yarn build
 ```
 
 Note: build script will globally `yarn link` `torn-token` package
+
 Note: build script will not recompile snark circuit if compilation result already exists
 
 The result of the build is `actions.json` file, that contains everything that is needed to deploy contracts on Ethereum along with expected deploy addresses.
