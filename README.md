@@ -2,25 +2,23 @@
 
 1. node 12
 2. yarn
-3. zkutil (`brew install rust && cargo install zkutil`) (needed only for circuit compilation and setup)
 
 ## Usage
 
 ```
-git clone --recursive https://github.com/tornadocash/tornado-deploy
+git clone --recursive https://github.com/tornadocash/tornado-deploy -b tornado-core
 cd tornado-deploy
 cp .env.example .env
 yarn
-
-# optionally copy production snark circuits
-mkdir -p tornado-anonymity-mining/build && cp -R ~/Downloads/circuits ./tornado-anonymity-mining/build
-
-yarn build
 ```
 
-Note: build script will globally `yarn link` `torn-token` package
+Edit `instances.js` config to choose what Tornado pool you would like to deploy
 
-Note: build script will not recompile snark circuit if compilation result already exists
+When you are ready, run
+
+```
+yarn build
+```
 
 The result of the build is `actions.json` file, that contains everything that is needed to deploy contracts on Ethereum along with expected deploy addresses.
 
