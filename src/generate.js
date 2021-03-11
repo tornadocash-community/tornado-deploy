@@ -4,7 +4,7 @@ const ethers = require('ethers')
 const { formatUnits } = ethers.utils
 const { deploy, getContractData } = require('./utils')
 
-const { DEPLOYER, SALT, HASHER, VERIFIER } = process.env
+const { DEPLOYER, SALT, HASHER, VERIFIER, COMP_ADDRESS } = process.env
 
 const instances = require('../instances')
 // const deployer = getContractData('../deployer/build/contracts/Deployer.json')
@@ -12,9 +12,12 @@ const instances = require('../instances')
 // const hasher = getContractData('../tornado-core/build/contracts/Hasher.json')
 const ethTornado = getContractData('../tornado-core/build/contracts/ETHTornado.json')
 const ercTornado = getContractData('../tornado-core/build/contracts/ERC20Tornado.json')
+const compTornado = getContractData('../tornado-core/build/contracts/cTornado.json')
 
 const actions = []
 
+// Actions needed for new blockchains
+// Assumes that EIP-2470 deployer is already present on the chain
 // actions.push(
 //   deploy({
 //     domain: config.deployer.address,
@@ -56,15 +59,18 @@ for (const instance of instances) {
   if (!instance.isETH) {
     args.push(instance.tokenAddress)
   }
+  if (instance.isCToken) {
+    args.unshift(COMP_ADDRESS)
+  }
   actions.push(
     deploy({
       domain: instance.domain,
-      contract: instance.isETH ? ethTornado : ercTornado,
+      contract: instance.isETH ? ethTornado : instance.isCToken ? compTornado : ercTornado,
       args,
-      title: `New Tornado.cash pool for ${formatUnits(instance.denomination, instance.decimals)} of ${
+      title: `New Tornado.cash pool for ${formatUnits(instance.denomination, instance.decimals).replace(/\.0$/, '')} of ${
         instance.symbol
       }`,
-      description: `Tornado cash instance for ${formatUnits(instance.denomination, instance.decimals)} of ${
+      description: `Tornado cash instance for ${formatUnits(instance.denomination, instance.decimals).replace(/\.0$/, '')} of ${
         instance.symbol
       }${instance.isETH ? '' : ` at address ${instance.tokenAddress}`}`,
     }),
@@ -77,5 +83,5 @@ const result = {
   salt: SALT,
   actions: actions,
 }
-fs.writeFileSync('actions.json', JSON.stringify(result, null, '  '))
+fs.writeFileSync('actions.json', JSON.stringify(result, null, 2))
 console.log('Created actions.json')

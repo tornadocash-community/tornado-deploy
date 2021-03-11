@@ -24,7 +24,7 @@ async function main() {
       continue
     }
     console.log(`Deploying ${action.contract} to ${action.domain} (${action.expectedAddress})`)
-    const tx = await deployer.deploy(action.bytecode, actions.salt, { gasLimit: 7e6, gasPrice: 20000000000 })
+    const tx = await deployer.deploy(action.bytecode, actions.salt, { gasLimit: 7e6, gasPrice: 1e6 })
     console.log(`TX hash ${explorer}/tx/${tx.hash}`)
     try {
       await tx.wait()
