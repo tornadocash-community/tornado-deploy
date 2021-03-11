@@ -1,7 +1,7 @@
 require('dotenv').config()
 const fs = require('fs')
 const ethers = require('ethers')
-const { formatUnits } = ethers.utils
+const { formatUnits, commify } = ethers.utils
 const { deploy, getContractData } = require('./utils')
 
 const { DEPLOYER, SALT, HASHER, VERIFIER, COMP_ADDRESS } = process.env
@@ -67,10 +67,10 @@ for (const instance of instances) {
       domain: instance.domain,
       contract: instance.isETH ? ethTornado : instance.isCToken ? compTornado : ercTornado,
       args,
-      title: `New Tornado.cash pool for ${formatUnits(instance.denomination, instance.decimals).replace(/\.0$/, '')} of ${
+      title: `Tornado.cash instance for ${commify(formatUnits(instance.denomination, instance.decimals)).replace(/\.0$/, '')} of ${
         instance.symbol
       }`,
-      description: `Tornado cash instance for ${formatUnits(instance.denomination, instance.decimals).replace(/\.0$/, '')} of ${
+      description: `Tornado cash instance for ${commify(formatUnits(instance.denomination, instance.decimals)).replace(/\.0$/, '')} of ${
         instance.symbol
       }${instance.isETH ? '' : ` at address ${instance.tokenAddress}`}`,
     }),
