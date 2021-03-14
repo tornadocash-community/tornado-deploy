@@ -4,9 +4,10 @@ const ethers = require('ethers')
 const { formatUnits, commify } = ethers.utils
 const { deploy, getContractData } = require('./utils')
 
-const { DEPLOYER, SALT, HASHER, VERIFIER, COMP_ADDRESS } = process.env
+const { DEPLOYER, SALT, HASHER, VERIFIER, COMP_ADDRESS, NET_ID } = process.env
 
-const instances = require('../instances')
+const instancesFile = NET_ID == 1 ? 'instancesMainnet' : 'instancesGoerli'
+const instances = require(instancesFile)
 // const deployer = getContractData('../deployer/build/contracts/Deployer.json')
 // const verifier = getContractData('../tornado-core/build/contracts/Verifier.json')
 // const hasher = getContractData('../tornado-core/build/contracts/Hasher.json')
@@ -67,12 +68,14 @@ for (const instance of instances) {
       domain: instance.domain,
       contract: instance.isETH ? ethTornado : instance.isCToken ? compTornado : ercTornado,
       args,
-      title: `Tornado.cash instance for ${commify(formatUnits(instance.denomination, instance.decimals)).replace(/\.0$/, '')} of ${
-        instance.symbol
+      title: `Tornado.cash instance for ${commify(
+        formatUnits(instance.denomination, instance.decimals),
+      ).replace(/\.0$/, '')} of ${instance.symbol}`,
+      description: `Tornado cash instance for ${commify(
+        formatUnits(instance.denomination, instance.decimals),
+      ).replace(/\.0$/, '')} of ${instance.symbol}${
+        instance.isETH ? '' : ` at address ${instance.tokenAddress}`
       }`,
-      description: `Tornado cash instance for ${commify(formatUnits(instance.denomination, instance.decimals)).replace(/\.0$/, '')} of ${
-        instance.symbol
-      }${instance.isETH ? '' : ` at address ${instance.tokenAddress}`}`,
     }),
   )
 }
