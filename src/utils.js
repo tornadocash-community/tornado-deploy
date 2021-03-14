@@ -30,7 +30,7 @@ function deploy({
   description = '',
   dependsOn = [], //[config.deployer.address],
 }) {
-  console.log('Generating deploy for', contract.name)
+  console.log('Generating deploy for', domain)
   let bytecode = contract.bytecode
   let constructorArgs
   if (args) {

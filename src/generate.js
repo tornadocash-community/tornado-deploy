@@ -7,7 +7,7 @@ const { deploy, getContractData } = require('./utils')
 const { DEPLOYER, SALT, HASHER, VERIFIER, COMP_ADDRESS, NET_ID } = process.env
 
 const instancesFile = NET_ID == 1 ? 'instancesMainnet' : 'instancesGoerli'
-const instances = require(instancesFile)
+const instances = require(`../${instancesFile}`)
 // const deployer = getContractData('../deployer/build/contracts/Deployer.json')
 // const verifier = getContractData('../tornado-core/build/contracts/Verifier.json')
 // const hasher = getContractData('../tornado-core/build/contracts/Hasher.json')
