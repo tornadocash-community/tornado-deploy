@@ -26,8 +26,3 @@ The result of the build is `actions.json` file, that contains everything that is
 
 In order to generate exactly the same actions.json the code has to be compiled in `/private/tmp/tornado-deploy` dir because solidity compiler includes a hash of full path to files into contact bytecode as swarm hash. If you compile in other dir this swarm hash will be different. It doesn't affect contract execution but your `actions.json` will have a different hash from the initiation version.
 
-## Verify addresses
-
-```
-cat actions.json | jq '.actions[] | {domain,expectedAddress,contract} '
-```
