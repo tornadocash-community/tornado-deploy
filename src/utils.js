@@ -51,7 +51,16 @@ function deploy({
   }
 }
 
+function expectedAddress(actions, action) {
+  const result = actions.find((a) => a.domain === action)
+  if (!result) {
+    throw new Error(`Address not found: ${action}`)
+  }
+  return result.expectedAddress
+}
+
 module.exports = {
   deploy,
   getContractData,
+  expectedAddress,
 }
