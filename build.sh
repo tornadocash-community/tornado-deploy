@@ -11,3 +11,9 @@ cd deployer
 yarn install
 yarn compile
 cd ..
+
+cd tornado-anonymity-mining
+yarn install
+# yarn circuit
+yarn compile
+cd ..

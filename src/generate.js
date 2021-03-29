@@ -13,6 +13,7 @@ const hasher = getContractData('../tornado-core/build/contracts/Hasher.json')
 const ethTornado = getContractData('../tornado-core/build/contracts/ETHTornado.json')
 const ercTornado = getContractData('../tornado-core/build/contracts/ERC20Tornado.json')
 const compTornado = getContractData('../tornado-core/build/contracts/cTornado.json')
+const proxyLight = getContractData('../tornado-anonymity-mining/build/contracts/TornadoProxyLight.json')
 
 const actions = []
 
@@ -67,6 +68,16 @@ actions.push(
     contract: verifier,
     title: 'Verifier',
     description: 'zkSNARK verifier contract for withdrawals',
+  }),
+)
+
+// Deploy proxy
+actions.push(
+  deploy({
+    domain: 'proxy-light.contract.tornadocash.eth',
+    contract: proxyLight,
+    title: 'ProxyLight',
+    description: 'Tornado proxy light for L2',
   }),
 )
 
