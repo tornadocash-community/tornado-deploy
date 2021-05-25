@@ -13,7 +13,12 @@ yarn compile
 cd ..
 
 cd tornado-anonymity-mining
+mkdir -p build/circuits
+pushd build/circuits
+wget https://github.com/tornadocash/tornado-anonymity-mining/releases/download/v1.0.0/RewardVerifier.sol
+wget https://github.com/tornadocash/tornado-anonymity-mining/releases/download/v1.0.0/WithdrawVerifier.sol
+wget https://github.com/tornadocash/tornado-anonymity-mining/releases/download/v1.0.0/TreeUpdateVerifier.sol
+popd
 yarn install
-# yarn circuit
 yarn compile
 cd ..
