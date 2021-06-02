@@ -6,7 +6,7 @@
 ## Usage
 
 ```
-git clone --recursive https://github.com/tornadocash/tornado-deploy -b tornado-core
+git clone --recursive https://github.com/tornadocash/tornado-deploy -b bsc
 cd tornado-deploy
 cp .env.example .env
 yarn
