@@ -16,6 +16,7 @@ async function main() {
   const provider = new ethers.providers.JsonRpcProvider(process.env.RPC_URL)
   const wallet = new ethers.Wallet(privateKey, provider)
   let deployer = new ethers.Contract(actions.deployer, abi, wallet)
+  console.log('actions.deployer', actions.deployer)
 
   let code = await provider.getCode(actions.eipDeployer.expectedAddress)
   if (!code || code === '0x') {
@@ -46,7 +47,7 @@ async function main() {
       continue
     }
     console.log(`Deploying ${action.contract} to ${action.domain} (${action.expectedAddress})`)
-    const tx = await deployer.deploy(action.bytecode, actions.salt, { gasLimit: 7e7, gasPrice: 1e9 })
+    const tx = await deployer.deploy(action.bytecode, actions.salt, { gasLimit: 70e6, gasPrice: 1e9 })
     console.log(`TX hash ${explorer}/tx/${tx.hash}`)
     try {
       await tx.wait()
@@ -58,7 +59,7 @@ async function main() {
       console.error(`Failed to deploy ${action.contract}, sending debug tx`)
       // const trace = await provider.send('debug_traceTransaction', [ tx.hash ])
       // console.log(trace)
-      const tx2 = await wallet.sendTransaction({ gasLimit: 8e6, gasPrice: 1e9, data: action.bytecode })
+      const tx2 = await wallet.sendTransaction({ gasLimit: 70e6, gasPrice: 1e9, data: action.bytecode })
       console.log(`TX hash ${explorer}/tx/${tx2.hash}`)
       await tx2.wait()
       console.log('Mined, check revert reason on etherscan')

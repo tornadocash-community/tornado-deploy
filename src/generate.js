@@ -39,17 +39,17 @@ const eipDeployer = {
 
 // Actions needed for new blockchains
 // Assumes that EIP-2470 deployer is already present on the chain
-actions.push(
-  deploy({
-    domain: 'deployer.contract.tornadocash.eth',
-    contract: deployer,
-    args: ['0x0000000000000000000000000000000000000000'],
-    dependsOn: [],
-    title: 'Deployment proxy',
-    description:
-      'This a required contract to initialize all other contracts. It is simple wrapper around EIP-2470 Singleton Factory that emits an event of contract deployment. The wrapper also validates if the deployment was successful.',
-  }),
-)
+// actions.push(
+//   deploy({
+//     domain: 'deployer.contract.tornadocash.eth',
+//     contract: deployer,
+//     args: ['0x0000000000000000000000000000000000000000'],
+//     dependsOn: [],
+//     title: 'Deployment proxy',
+//     description:
+//       'This a required contract to initialize all other contracts. It is simple wrapper around EIP-2470 Singleton Factory that emits an event of contract deployment. The wrapper also validates if the deployment was successful.',
+//   }),
+// )
 
 // Deploy Hasher
 actions.push(
