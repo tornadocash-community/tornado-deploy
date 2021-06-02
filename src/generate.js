@@ -4,7 +4,7 @@ const ethers = require('ethers')
 const { formatUnits, commify } = ethers.utils
 const { deploy, getContractData, expectedAddress } = require('./utils')
 
-const { DEPLOYER, SALT, COMP_ADDRESS } = process.env
+const { SALT, COMP_ADDRESS } = process.env
 
 const instances = require('../instances')
 const deployer = getContractData('../deployer/build/contracts/Deployer.json')
@@ -39,17 +39,17 @@ const eipDeployer = {
 
 // Actions needed for new blockchains
 // Assumes that EIP-2470 deployer is already present on the chain
-// actions.push(
-//   deploy({
-//     domain: 'deployer.contract.tornadocash.eth',
-//     contract: deployer,
-//     args: ['0x0000000000000000000000000000000000000000'],
-//     dependsOn: [],
-//     title: 'Deployment proxy',
-//     description:
-//       'This a required contract to initialize all other contracts. It is simple wrapper around EIP-2470 Singleton Factory that emits an event of contract deployment. The wrapper also validates if the deployment was successful.',
-//   }),
-// )
+actions.push(
+  deploy({
+    domain: 'deployer.contract.tornadocash.eth',
+    contract: deployer,
+    args: ['0x0000000000000000000000000000000000000000'],
+    dependsOn: [],
+    title: 'Deployment proxy',
+    description:
+      'This a required contract to initialize all other contracts. It is simple wrapper around EIP-2470 Singleton Factory that emits an event of contract deployment. The wrapper also validates if the deployment was successful.',
+  }),
+)
 
 // Deploy Hasher
 actions.push(
@@ -58,7 +58,7 @@ actions.push(
     contract: hasher,
     title: 'Hasher',
     description: 'MiMC hasher contract',
-    dependsOn: [],
+    dependsOn: ['deployer.contract.tornadocash.eth'],
   }),
 )
 
@@ -69,6 +69,7 @@ actions.push(
     contract: verifier,
     title: 'Verifier',
     description: 'zkSNARK verifier contract for withdrawals',
+    dependsOn: ['deployer.contract.tornadocash.eth'],
   }),
 )
 
@@ -79,6 +80,7 @@ actions.push(
     contract: proxyLight,
     title: 'ProxyLight',
     description: 'Tornado proxy light for L2',
+    dependsOn: ['deployer.contract.tornadocash.eth'],
   }),
 )
 
@@ -89,6 +91,7 @@ actions.push(
     contract: echoer,
     title: 'Echoer',
     description: 'Utility contract that stores encrypted Note Accounts',
+    dependsOn: ['deployer.contract.tornadocash.eth'],
   }),
 )
 
@@ -119,6 +122,11 @@ for (const instance of instances) {
       ).replace(/\.0$/, '')} of ${instance.symbol}${
         instance.isETH ? '' : ` at address ${instance.tokenAddress}`
       }`,
+      dependsOn: [
+        'deployer.contract.tornadocash.eth',
+        'hasher.contract.tornadocash.eth',
+        'verifier.contract.tornadocash.eth',
+      ],
     }),
   )
 }
@@ -126,7 +134,7 @@ for (const instance of instances) {
 // Write output
 const result = {
   eipDeployer,
-  deployer: DEPLOYER,
+  deployer: eipDeployer.expectedAddress,
   salt: SALT,
   actions: actions,
 }
