@@ -4,12 +4,14 @@ const actions = require('../actions.json')
 const abi = require('../abi/deployer.abi.json')
 
 const prefix = {
-  1: '',
-  42: 'kovan.',
-  5: 'goerli.',
+  1: 'etherscan.io',
+  42: 'kovan.etherscan.io',
+  5: 'goerli.etherscan.io',
+  56: 'bscscan.com',
+  137: 'polygonscan.com',
 }
 
-const explorer = `https://${prefix[process.env.NET_ID]}etherscan.io`
+const explorer = `https://${prefix[process.env.NET_ID]}`
 
 async function main() {
   const privateKey = process.env.PRIVATE_KEY
@@ -27,8 +29,8 @@ async function main() {
       const tx = await wallet.sendTransaction({
         to: actions.eipDeployer.from,
         value: ethers.utils.parseEther('0.0247').sub(balance).toHexString(),
-        gasLimit: ethers.BigNumber.from(800000).toHexString(), // 800k because of arbitrum
-        gasPrice: 1e6,
+        gasLimit: ethers.BigNumber.from(250000).toHexString(),
+        gasPrice: 100e9,
       })
       console.log('Tx hash:', tx.hash)
     }
@@ -47,7 +49,7 @@ async function main() {
       continue
     }
     console.log(`Deploying ${action.contract} to ${action.domain} (${action.expectedAddress})`)
-    const tx = await deployer.deploy(action.bytecode, actions.salt, { gasLimit: 70e6, gasPrice: 1e9 })
+    const tx = await deployer.deploy(action.bytecode, actions.salt, { gasLimit: 3e6, gasPrice: 5e9 })
     console.log(`TX hash ${explorer}/tx/${tx.hash}`)
     try {
       await tx.wait()
@@ -59,7 +61,7 @@ async function main() {
       console.error(`Failed to deploy ${action.contract}, sending debug tx`)
       // const trace = await provider.send('debug_traceTransaction', [ tx.hash ])
       // console.log(trace)
-      const tx2 = await wallet.sendTransaction({ gasLimit: 70e6, gasPrice: 1e9, data: action.bytecode })
+      const tx2 = await wallet.sendTransaction({ gasLimit: 3e6, gasPrice: 5e9, data: action.bytecode })
       console.log(`TX hash ${explorer}/tx/${tx2.hash}`)
       await tx2.wait()
       console.log('Mined, check revert reason on etherscan')
