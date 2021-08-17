@@ -8,6 +8,7 @@ const prefix = {
   42: 'kovan.etherscan.io',
   5: 'goerli.etherscan.io',
   56: 'bscscan.com',
+  100: 'blockscout.com/xdai/mainnet',
   137: 'polygonscan.com',
 }
 
