@@ -10,6 +10,7 @@ const prefix = {
   56: 'bscscan.com',
   100: 'blockscout.com/xdai/mainnet',
   137: 'polygonscan.com',
+  43114: 'cchain.explorer.avax.network',
 }
 
 const explorer = `https://${prefix[process.env.NET_ID]}`
