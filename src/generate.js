@@ -4,17 +4,18 @@ const ethers = require('ethers')
 const { formatUnits, commify } = ethers.utils
 const { deploy, getContractData, expectedAddress } = require('./utils')
 
-const { SALT, COMP_ADDRESS } = process.env
+const { SALT, MERKLE_TREE_HEIGHT, OMNIBRIDGE, GOVERNANCE, L2_TOKEN } = process.env
 
-const instances = require('../instances')
 const deployer = getContractData('../deployer/build/contracts/Deployer.json')
-const verifier = getContractData('../tornado-core/build/contracts/Verifier.json')
-const hasher = getContractData('../tornado-core/build/contracts/Hasher.json')
-const ethTornado = getContractData('../tornado-core/build/contracts/ETHTornado.json')
-const ercTornado = getContractData('../tornado-core/build/contracts/ERC20Tornado.json')
-const compTornado = getContractData('../tornado-core/build/contracts/cTornado.json')
-const proxyLight = getContractData('../tornado-anonymity-mining/build/contracts/TornadoProxyLight.json')
-const echoer = getContractData('../tornado-anonymity-mining/build/contracts/Echoer.json')
+const verifier2 = getContractData('../tornado-pool/artifacts/contracts/Verifier2.sol/Verifier2.json')
+const verifier16 = getContractData('../tornado-pool/artifacts/contracts/Verifier16.sol/Verifier16.json')
+const hasher = getContractData('../tornado-pool/artifacts/contracts/Hasher.sol/Hasher.json')
+const tornadoPool = getContractData('../tornado-pool/artifacts/contracts/TornadoPool.sol/TornadoPool.json')
+const upgradeableProxy = getContractData(
+  '../tornado-pool/artifacts/contracts/CrossChainUpgradeableProxy.sol.sol/CrossChainUpgradeableProxy.sol.json',
+)
+
+const l1Helper = getContractData('../tornado-pool/artifacts/contracts/bridge/L1Helper.sol/L1Helper.json')
 
 const actions = []
 
@@ -26,7 +27,7 @@ const eipDeployer = {
     value: 0,
     data:
       '0x608060405234801561001057600080fd5b50610134806100206000396000f3fe6080604052348015600f57600080fd5b506004361060285760003560e01c80634af63f0214602d575b600080fd5b60cf60048036036040811015604157600080fd5b810190602081018135640100000000811115605b57600080fd5b820183602082011115606c57600080fd5b80359060200191846001830284011164010000000083111715608d57600080fd5b91908080601f016020809104026020016040519081016040528093929190818152602001838380828437600092019190915250929550509135925060eb915050565b604080516001600160a01b039092168252519081900360200190f35b6000818351602085016000f5939250505056fea26469706673582212206b44f8a82cb6b156bfcc3dc6aadd6df4eefd204bc928a4397fd15dacf6d5320564736f6c63430006020033',
-    gasLimit: 7247000, // more gas because it's arbitrum
+    gasLimit: 7247000,
   },
   signature: {
     v: 27,
@@ -57,7 +58,7 @@ actions.push(
     domain: 'hasher.contract.tornadocash.eth',
     contract: hasher,
     title: 'Hasher',
-    description: 'MiMC hasher contract',
+    description: 'Poseidon hasher contract',
     dependsOn: ['deployer.contract.tornadocash.eth'],
   }),
 )
@@ -65,71 +66,71 @@ actions.push(
 // Deploy verifier
 actions.push(
   deploy({
-    domain: 'verifier.contract.tornadocash.eth',
-    contract: verifier,
-    title: 'Verifier',
-    description: 'zkSNARK verifier contract for withdrawals',
+    domain: 'verifier2.contract.tornadocash.eth',
+    contract: verifier2,
+    title: 'Verifier2',
+    description: 'zkSNARK verifier contract for 2 input operations',
     dependsOn: ['deployer.contract.tornadocash.eth'],
   }),
 )
 
-// Deploy proxy
 actions.push(
   deploy({
-    domain: 'proxy-light.contract.tornadocash.eth',
-    contract: proxyLight,
-    title: 'ProxyLight',
-    description: 'Tornado proxy light for L2',
+    domain: 'verifier16.contract.tornadocash.eth',
+    contract: verifier16,
+    title: 'Verifier16',
+    description: 'zkSNARK verifier contract for 16 input operations',
     dependsOn: ['deployer.contract.tornadocash.eth'],
   }),
 )
 
-// Deploy Echoer
+// Tornado implementation
 actions.push(
   deploy({
-    domain: 'echoer.contract.tornadocash.eth',
-    contract: echoer,
-    title: 'Echoer',
-    description: 'Utility contract that stores encrypted Note Accounts',
+    domain: 'tornadoPool.contract.tornadocash.eth',
+    contract: tornadoPool,
+    title: 'Tornado Pool implementation',
+    description: 'Tornado Pool proxy implementation',
+    dependsOn: ['deployer.contract.tornadocash.eth'],
+    args: [
+      expectedAddress(actions, 'verifier2.contract.tornadocash.eth'),
+      expectedAddress(actions, 'verifier16.contract.tornadocash.eth'),
+      MERKLE_TREE_HEIGHT,
+      expectedAddress(actions, 'hasher.contract.tornadocash.eth'),
+      L2_TOKEN,
+      OMNIBRIDGE,
+      expectedAddress(actions, 'l1Helper.contract.tornadocash.eth'),
+      GOVERNANCE,
+    ],
+  }),
+)
+
+// TODO Deploy and call
+// TODO hasher
+// TODO proxy and l1 args
+// TODO mark l1 as l1
+
+// Deploy Proxy
+actions.push(
+  deploy({
+    domain: 'proxy.contract.tornadocash.eth',
+    contract: upgradeableProxy,
+    title: 'Cross-chain Upgradeable Proxy',
+    description: 'Upgradability proxy contract for Tornado Pool owned by TornadoCash governance',
     dependsOn: ['deployer.contract.tornadocash.eth'],
   }),
 )
 
-// Deploy instances
-for (const instance of instances) {
-  const args = [
-    expectedAddress(actions, 'verifier.contract.tornadocash.eth'),
-    expectedAddress(actions, 'hasher.contract.tornadocash.eth'),
-    instance.denomination,
-    20,
-  ]
-  if (!instance.isETH) {
-    args.push(instance.tokenAddress)
-  }
-  if (instance.isCToken) {
-    args.unshift(COMP_ADDRESS)
-  }
-  actions.push(
-    deploy({
-      domain: instance.domain,
-      contract: instance.isETH ? ethTornado : instance.isCToken ? compTornado : ercTornado,
-      args,
-      title: `Tornado.cash instance for ${commify(
-        formatUnits(instance.denomination, instance.decimals),
-      ).replace(/\.0$/, '')} of ${instance.symbol}`,
-      description: `Tornado cash instance for ${commify(
-        formatUnits(instance.denomination, instance.decimals),
-      ).replace(/\.0$/, '')} of ${instance.symbol}${
-        instance.isETH ? '' : ` at address ${instance.tokenAddress}`
-      }`,
-      dependsOn: [
-        'deployer.contract.tornadocash.eth',
-        'hasher.contract.tornadocash.eth',
-        'verifier.contract.tornadocash.eth',
-      ],
-    }),
-  )
-}
+// l1
+actions.push(
+  deploy({
+    domain: 'l1Helper.contract.tornadocash.eth',
+    contract: l1Helper,
+    title: 'L1 Omnibridge Helper',
+    description: 'Utility contract for the xDAI Omnibridge on L1',
+    dependsOn: ['deployer.contract.tornadocash.eth'],
+  }),
+)
 
 // Write output
 const result = {

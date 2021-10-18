@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "clean": "rm -rf torn-token/build && rm -rf tornado-anonymity-mining/build/contracts && rm -rf governance/build",
+    "clean": "rm -rf tornado-pool/artifacts",
     "generate": "node src/generate.js",
     "ens": "node src/ens.js",
     "execute": "node src/execute.js",

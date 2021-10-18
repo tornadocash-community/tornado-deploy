@@ -1,10 +1,6 @@
-[submodule "tornado-core"]
-	path = tornado-core
-	url = https://github.com/tornadocash/tornado-core
-	branch = create2
 [submodule "deployer"]
 	path = deployer
 	url = https://github.com/tornadocash/deployer
-[submodule "tornado-anonymity-mining"]
-	path = tornado-anonymity-mining
-	url = https://github.com/tornadocash/tornado-anonymity-mining
+[submodule "tornado-pool"]
+	path = tornado-pool
+	url = https://github.com/tornadocash/tornado-pool
