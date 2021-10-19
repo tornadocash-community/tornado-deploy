@@ -29,6 +29,7 @@ function deploy({
   title = '',
   description = '',
   dependsOn = [], //[config.deployer.address],
+  isL1Contract = false,
 }) {
   console.log('Generating deploy for', contract.name)
   let bytecode = contract.bytecode
@@ -48,6 +49,7 @@ function deploy({
     constructorArgs,
     description,
     dependsOn,
+    isL1Contract,
   }
 }
 

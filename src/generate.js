@@ -1,18 +1,30 @@
 require('dotenv').config()
 const fs = require('fs')
 const ethers = require('ethers')
-const { formatUnits, commify } = ethers.utils
+const { parseEther } = ethers.utils
 const { deploy, getContractData, expectedAddress } = require('./utils')
 
-const { SALT, MERKLE_TREE_HEIGHT, OMNIBRIDGE, GOVERNANCE, L2_TOKEN } = process.env
+const {
+  SALT,
+  MERKLE_TREE_HEIGHT,
+  L1_OMNIBRIDGE,
+  L2_OMNIBRIDGE,
+  GOVERNANCE,
+  L2_TOKEN,
+  L1_TOKEN,
+  L2_AMB,
+  L1_CHAIN_ID,
+  MAXIMUM_DEPOSIT_AMOUNT,
+  MINIMUM_WITHDRAWAL_AMOUNT,
+} = process.env
 
 const deployer = getContractData('../deployer/build/contracts/Deployer.json')
 const verifier2 = getContractData('../tornado-pool/artifacts/contracts/Verifier2.sol/Verifier2.json')
 const verifier16 = getContractData('../tornado-pool/artifacts/contracts/Verifier16.sol/Verifier16.json')
-const hasher = getContractData('../tornado-pool/artifacts/contracts/Hasher.sol/Hasher.json')
+const hasher = getContractData('../tornado-pool/artifacts/contracts/Hasher.json')
 const tornadoPool = getContractData('../tornado-pool/artifacts/contracts/TornadoPool.sol/TornadoPool.json')
 const upgradeableProxy = getContractData(
-  '../tornado-pool/artifacts/contracts/CrossChainUpgradeableProxy.sol.sol/CrossChainUpgradeableProxy.sol.json',
+  '../tornado-pool/artifacts/contracts/CrossChainUpgradeableProxy.sol/CrossChainUpgradeableProxy.json',
 )
 
 const l1Helper = getContractData('../tornado-pool/artifacts/contracts/bridge/L1Helper.sol/L1Helper.json')
@@ -52,6 +64,20 @@ actions.push(
   }),
 )
 
+// L1
+actions.push(
+  deploy({
+    domain: 'l1Helper.contract.tornadocash.eth',
+    contract: l1Helper,
+    title: 'L1 Omnibridge Helper',
+    description: 'Utility contract for the xDAI Omnibridge on L1',
+    dependsOn: ['deployer.contract.tornadocash.eth'],
+    args: [L1_OMNIBRIDGE, L1_TOKEN, GOVERNANCE],
+    isL1Contract: true,
+  }),
+)
+
+// L2
 // Deploy Hasher
 actions.push(
   deploy({
@@ -98,19 +124,21 @@ actions.push(
       MERKLE_TREE_HEIGHT,
       expectedAddress(actions, 'hasher.contract.tornadocash.eth'),
       L2_TOKEN,
-      OMNIBRIDGE,
+      L2_OMNIBRIDGE,
       expectedAddress(actions, 'l1Helper.contract.tornadocash.eth'),
       GOVERNANCE,
+      L1_CHAIN_ID,
     ],
   }),
 )
 
-// TODO Deploy and call
-// TODO hasher
-// TODO proxy and l1 args
-// TODO mark l1 as l1
-
 // Deploy Proxy
+const tornadoInterface = new ethers.utils.Interface(tornadoPool.abi)
+const initData = tornadoInterface.encodeFunctionData('initialize', [
+  parseEther(MINIMUM_WITHDRAWAL_AMOUNT),
+  parseEther(MAXIMUM_DEPOSIT_AMOUNT),
+])
+
 actions.push(
   deploy({
     domain: 'proxy.contract.tornadocash.eth',
@@ -118,17 +146,13 @@ actions.push(
     title: 'Cross-chain Upgradeable Proxy',
     description: 'Upgradability proxy contract for Tornado Pool owned by TornadoCash governance',
     dependsOn: ['deployer.contract.tornadocash.eth'],
-  }),
-)
-
-// l1
-actions.push(
-  deploy({
-    domain: 'l1Helper.contract.tornadocash.eth',
-    contract: l1Helper,
-    title: 'L1 Omnibridge Helper',
-    description: 'Utility contract for the xDAI Omnibridge on L1',
-    dependsOn: ['deployer.contract.tornadocash.eth'],
+    args: [
+      expectedAddress(actions, 'tornadoPool.contract.tornadocash.eth'),
+      GOVERNANCE,
+      initData,
+      L2_AMB,
+      L1_CHAIN_ID,
+    ],
   }),
 )
 

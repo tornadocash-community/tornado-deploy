@@ -9,5 +9,5 @@ cd ..
 cd tornado-pool
 yarn install
 yarn circuit_prod
-npx hardhat compile
+yarn compile
 cd ..
