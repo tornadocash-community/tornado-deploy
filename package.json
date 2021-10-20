@@ -9,7 +9,7 @@
     "ens": "node src/ens.js",
     "execute": "node src/execute.js",
     "build": "./build.sh && yarn generate",
-    "deploy": "yarn build && yarn ens && yarn execute",
+    "deploy": "yarn build && yarn execute",
     "eslint": "eslint --ext .js --ignore-path .gitignore src",
     "prettier:check": "prettier --check src --config .prettierrc",
     "prettier:fix": "prettier --write src --config .prettierrc",
