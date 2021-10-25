@@ -72,7 +72,7 @@ actions.push(
     contract: l1Helper,
     title: 'L1 Omnibridge Helper',
     description: 'Utility contract for the xDAI Omnibridge on L1',
-    dependsOn: ['deployer.contract.tornadocash.eth'],
+    dependsOn: ['deployerL1.contract.tornadocash.eth'],
     args: [L1_OMNIBRIDGE, L1_TOKEN, GOVERNANCE],
     isL1Contract: true,
   }),
@@ -98,7 +98,7 @@ actions.push(
     contract: hasher,
     title: 'Hasher',
     description: 'Poseidon hasher contract',
-    dependsOn: ['deployer.contract.tornadocash.eth'],
+    dependsOn: ['deployerL2.contract.tornadocash.eth'],
   }),
 )
 
@@ -109,7 +109,7 @@ actions.push(
     contract: verifier2,
     title: 'Verifier2',
     description: 'zkSNARK verifier contract for 2 input operations',
-    dependsOn: ['deployer.contract.tornadocash.eth'],
+    dependsOn: ['deployerL2.contract.tornadocash.eth'],
   }),
 )
 
@@ -119,7 +119,7 @@ actions.push(
     contract: verifier16,
     title: 'Verifier16',
     description: 'zkSNARK verifier contract for 16 input operations',
-    dependsOn: ['deployer.contract.tornadocash.eth'],
+    dependsOn: ['deployerL2.contract.tornadocash.eth'],
   }),
 )
 
@@ -130,7 +130,12 @@ actions.push(
     contract: tornadoPool,
     title: 'Tornado Pool implementation',
     description: 'Tornado Pool proxy implementation',
-    dependsOn: ['deployer.contract.tornadocash.eth'],
+    dependsOn: [
+      'deployerL2.contract.tornadocash.eth',
+      'hasher.contract.tornadocash.eth',
+      'verifier2.contract.tornadocash.eth',
+      'verifier16.contract.tornadocash.eth',
+    ],
     args: [
       expectedAddress(actions, 'verifier2.contract.tornadocash.eth'),
       expectedAddress(actions, 'verifier16.contract.tornadocash.eth'),
@@ -158,7 +163,7 @@ actions.push(
     contract: upgradeableProxy,
     title: 'Cross-chain Upgradeable Proxy',
     description: 'Upgradability proxy contract for Tornado Pool owned by TornadoCash governance',
-    dependsOn: ['deployer.contract.tornadocash.eth'],
+    dependsOn: ['deployerL2.contract.tornadocash.eth', 'tornadoPool.contract.tornadocash.eth'],
     args: [
       expectedAddress(actions, 'tornadoPool.contract.tornadocash.eth'),
       GOVERNANCE,
