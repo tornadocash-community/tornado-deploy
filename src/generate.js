@@ -16,6 +16,7 @@ const {
   L1_CHAIN_ID,
   MAXIMUM_DEPOSIT_AMOUNT,
   MINIMUM_WITHDRAWAL_AMOUNT,
+  L2_MULTISIG,
 } = process.env
 
 const deployer = getContractData('../deployer/build/contracts/Deployer.json')
@@ -146,6 +147,7 @@ actions.push(
       expectedAddress(actions, 'l1Helper.contract.tornadocash.eth'),
       GOVERNANCE,
       L1_CHAIN_ID,
+      L2_MULTISIG,
     ],
   }),
 )
