@@ -3,7 +3,14 @@ const ethers = require('ethers')
 const actions = require('../actions.json')
 const abi = require('../abi/deployer.abi.json')
 
-const { L1_EXPLORER, L2_EXPLORER, L1_RPC_URL, L2_RPC_URL, GAS_PRICE_IN_WEI } = process.env
+const {
+  L1_EXPLORER,
+  L2_EXPLORER,
+  L1_RPC_URL,
+  L2_RPC_URL,
+  L1_GAS_PRICE_IN_WEI,
+  L2_GAS_PRICE_IN_WEI,
+} = process.env
 
 async function execute(isL1) {
   const RPC_URL = isL1 ? L1_RPC_URL : L2_RPC_URL
@@ -48,8 +55,8 @@ async function execute(isL1) {
     }
     console.log(`Deploying ${action.contract} to ${action.domain} (${action.expectedAddress})`)
     const tx = await deployer.deploy(action.bytecode, actions.salt, {
-      gasLimit: 5e6,
-      gasPrice: GAS_PRICE_IN_WEI,
+      gasLimit: 4e6,
+      gasPrice: isL1 ? L1_GAS_PRICE_IN_WEI : L2_GAS_PRICE_IN_WEI,
     })
     console.log(`TX hash ${explorer}/tx/${tx.hash}`)
     try {
@@ -64,7 +71,7 @@ async function execute(isL1) {
       // console.log(trace)
       const tx2 = await wallet.sendTransaction({
         gasLimit: 5e6,
-        gasPrice: GAS_PRICE_IN_WEI,
+        gasPrice: isL1 ? L1_GAS_PRICE_IN_WEI : L2_GAS_PRICE_IN_WEI,
         data: action.bytecode,
       })
       console.log(`TX hash ${explorer}/tx/${tx2.hash}`)
