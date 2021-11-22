@@ -10,6 +10,7 @@ const prefix = {
   56: 'bscscan.com',
   100: 'blockscout.com/xdai/mainnet',
   137: 'polygonscan.com',
+  42161: 'snowtrace.io',
   43114: 'cchain.explorer.avax.network',
 }
 
