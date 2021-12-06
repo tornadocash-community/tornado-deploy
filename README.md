@@ -12,8 +12,6 @@ cp .env.example .env
 yarn
 ```
 
-Edit `instances.js` config to choose what Tornado pool you would like to deploy
-
 When you are ready, run
 
 ```
