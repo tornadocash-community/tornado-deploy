@@ -130,7 +130,7 @@ actions.push(
     domain: 'tornadoPool.contract.tornadocash.eth',
     contract: tornadoPool,
     title: 'Tornado Pool implementation',
-    description: 'Tornado Pool proxy implementation',
+    description: 'TornadoCash Nova proxy implementation',
     dependsOn: [
       'deployerL2.contract.tornadocash.eth',
       'hasher.contract.tornadocash.eth',
@@ -164,7 +164,7 @@ actions.push(
     domain: 'proxy.contract.tornadocash.eth',
     contract: upgradeableProxy,
     title: 'Cross-chain Upgradeable Proxy',
-    description: 'Upgradability proxy contract for Tornado Pool owned by TornadoCash governance',
+    description: 'Upgradability proxy contract for TornadoCash Nova owned by TornadoCash governance',
     dependsOn: ['deployerL2.contract.tornadocash.eth', 'tornadoPool.contract.tornadocash.eth'],
     args: [
       expectedAddress(actions, 'tornadoPool.contract.tornadocash.eth'),
